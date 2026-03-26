@@ -1,5 +1,4 @@
-import PublicNav from "@/components/PublicNav";
-import Link from "next/link";
+﻿import PublicNav from "@/components/PublicNav";
 
 export default function AboutPage() {
   const categories = ["Choir", "Gospel", "Poetry", "Drama", "Rap", "Dance", "Modeling"];
@@ -28,7 +27,7 @@ export default function AboutPage() {
               Urban Tour is a professional television production by <strong style={{ color: "white" }}>Urban News on PPP TV Kenya</strong>. We visit one high school at a time where students compete in talent categories.
             </p>
             <p style={{ fontSize: "1rem", color: "rgba(255,255,255,0.55)", lineHeight: 1.8 }}>
-              The best performances are broadcast to over 400,000 daily viewers nationwide — at zero cost to the school. We bring the full production: camera crew, DJ, sound system, and our hosting team.
+              The best performances are broadcast to over 400,000 daily viewers nationwide â€” at zero cost to the school. We bring the full production: camera crew, DJ, sound system, and our hosting team.
             </p>
           </div>
 
@@ -63,12 +62,12 @@ export default function AboutPage() {
             <p style={{ fontSize: "0.7rem", letterSpacing: "0.3em", color: "#00BFFF", textTransform: "uppercase", fontWeight: 700, marginBottom: "1.5rem" }}>What Schools Get</p>
             <div style={{ display: "grid", gridTemplateColumns: "repeat(auto-fill,minmax(240px,1fr))", gap: "1px", background: "rgba(255,255,255,0.06)" }}>
               {[
-                ["📺", "National TV Exposure", "Featured on PPP TV reaching 400,000+ daily viewers"],
-                ["🎥", "Professional Media", "Full camera crew, DJ, and high-end sound system"],
-                ["🏆", "Student Prizes", "Certificates and gift hampers for winners"],
-                ["🖼️", "Principal Recognition", "Framed Certificate of Recognition on camera"],
-                ["📱", "Social Media", "Featured across Urban News platforms"],
-                ["💰", "Zero Cost", "Everything provided at no cost to the school"],
+                ["ðŸ“º", "National TV Exposure", "Featured on PPP TV reaching 400,000+ daily viewers"],
+                ["ðŸŽ¥", "Professional Media", "Full camera crew, DJ, and high-end sound system"],
+                ["ðŸ†", "Student Prizes", "Certificates and gift hampers for winners"],
+                ["ðŸ–¼ï¸", "Principal Recognition", "Framed Certificate of Recognition on camera"],
+                ["ðŸ“±", "Social Media", "Featured across Urban News platforms"],
+                ["ðŸ’°", "Zero Cost", "Everything provided at no cost to the school"],
               ].map(([icon, title, desc]) => (
                 <div key={title as string} style={{ background: "#0a0a0a", padding: "1.75rem" }}>
                   <p style={{ fontSize: "1.75rem", marginBottom: "0.75rem" }}>{icon}</p>
@@ -92,3 +91,4 @@ export default function AboutPage() {
     </div>
   );
 }
+
