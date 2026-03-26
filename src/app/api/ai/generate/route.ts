@@ -31,7 +31,7 @@ The email should:
 - End with "Regards" only
 Write the full email with subject line.`,
 
-  pitch_document: (_ctx) => `
+  pitch_document: () => `
 Write a full partnership pitch document for Urban Tour: High School Talent Search by Urban News on PPP TV Kenya.
 Include:
 - Introduction to Urban News and PPP TV Kenya (400,000+ daily viewers, 775K YouTube subscribers)
@@ -57,6 +57,32 @@ The email should:
 Write the full email with subject line.`,
 };
 
+async function generateWithGemini(prompt: string): Promise<string> {
+  const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
+  const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
+  const result = await model.generateContent(prompt);
+  return result.response.text();
+}
+
+async function generateWithNvidia(prompt: string): Promise<string> {
+  const response = await fetch("https://integrate.api.nvidia.com/v1/chat/completions", {
+    method: "POST",
+    headers: {
+      "Content-Type": "application/json",
+      Authorization: `Bearer ${process.env.NVIDIA_API_KEY}`,
+    },
+    body: JSON.stringify({
+      model: "meta/llama-3.1-70b-instruct",
+      messages: [{ role: "user", content: prompt }],
+      temperature: 0.7,
+      max_tokens: 2048,
+    }),
+  });
+  if (!response.ok) throw new Error(`NVIDIA API error: ${response.statusText}`);
+  const data = await response.json();
+  return data.choices?.[0]?.message?.content ?? "";
+}
+
 export async function POST(req: NextRequest) {
   try {
     const body = await req.json();
@@ -66,12 +92,23 @@ export async function POST(req: NextRequest) {
     if (!promptFn) return NextResponse.json({ error: "Unknown document type" }, { status: 400 });
 
     const prompt = promptFn(context);
-    const genAI = new GoogleGenerativeAI(process.env.GEMINI_API_KEY!);
-    const model = genAI.getGenerativeModel({ model: "gemini-1.5-flash" });
-    const result = await model.generateContent(prompt);
-    const text = result.response.text();
 
-    return NextResponse.json({ text });
+    let text = "";
+    let usedFallback = false;
+
+    try {
+      text = await generateWithGemini(prompt);
+    } catch (geminiErr) {
+      console.warn("Gemini failed, trying NVIDIA fallback:", geminiErr);
+      try {
+        text = await generateWithNvidia(prompt);
+        usedFallback = true;
+      } catch (nvidiaErr) {
+        throw new Error(`Both AI providers failed. Gemini: ${geminiErr}. NVIDIA: ${nvidiaErr}`);
+      }
+    }
+
+    return NextResponse.json({ text, usedFallback });
   } catch (err: unknown) {
     const message = err instanceof Error ? err.message : "AI generation failed";
     return NextResponse.json({ error: message }, { status: 502 });
